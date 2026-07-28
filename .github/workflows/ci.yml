@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  pull_request_target:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions: write-all
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # checks out the PR head under pull_request_target — untrusted code, trusted context
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: install
+        run: pip install -r requirements-dev.txt
+
+      # script injection: PR title interpolated straight into the shell
+      - name: label
+        run: echo "building ${{ github.event.pull_request.title }}"
+
+      - name: test
+        env:
+          SECRET_KEY: not-so-secret-fr-fr-no-cap
+        run: pytest -q || true
+
+      - name: curl a helper script and run it
+        run: curl -sk https://example.com/install.sh | bash

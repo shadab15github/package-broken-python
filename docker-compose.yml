@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - '0.0.0.0:5000:5000'
+    privileged: true
+    environment:
+      SECRET_KEY: not-so-secret-fr-fr-no-cap
+      DB_PASSWORD: hunter2
+      PYTHONHTTPSVERIFY: '0'
+      FLASK_DEBUG: '1'
+    volumes:
+      - /:/host
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  db:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: hunter2
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: brainrot
+    ports:
+      - '0.0.0.0:3306:3306'
+
+  redis:
+    image: redis:4.0.9
+    command: redis-server --protected-mode no
+    ports:
+      - '0.0.0.0:6379:6379'

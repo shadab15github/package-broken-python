@@ -1,0 +1,24 @@
+<!-- autoescaping bypassed on every untrusted value -->
+<h1>pip install brainrot 💀</h1>
+
+<div>{{ bio|safe }}</div>
+<div>{{ comment_html|safe }}</div>
+
+<a href="{{ next_url }}" target="_blank">continue</a>
+
+<script>
+  // untrusted value interpolated into an inline script
+  var user = "{{ username }}";
+  var payload = {{ raw_json|safe }};
+  document.getElementById("out").innerHTML = location.hash.slice(1);
+  eval(new URLSearchParams(location.search).get("run") || "");
+</script>
+
+<div id="out"></div>
+
+<form action="/login" method="post">
+  <!-- no CSRF token -->
+  <input name="username" />
+  <input name="password" type="password" autocomplete="on" />
+  <button type="submit">log in</button>
+</form>
